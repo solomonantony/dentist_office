@@ -1,13 +1,15 @@
+# pages/new_appointment.py
 import streamlit as st
 import pandas as pd
 from datetime import date
 from database import get_connection, add_patient, get_all_providers, get_all_rooms, get_all_patients,add_appointment, get_appointment_for_date
 
 
-st.subheader("Schedule Appointment")
 patients_dataframe = get_all_patients()
 providers_dataframe = get_all_providers()
 rooms_dataframe = get_all_rooms()
+
+st.subheader("Schedule Appointment")
 selected_date = st.date_input("Select a date", value=date.today(), key="query_date")
 results = get_appointment_for_date(selected_date)
 st.write(f"These are the current appointments for {selected_date}")
@@ -31,6 +33,6 @@ if schedule_submitted:
         str(selected_date), str(appointment_time), duration, visit_reason)
     st.success(f"Appoitnment scheduled.  Appointment ID: {new_appointment_id}")
 
-#view_date=st.date_input("Select a date to view", key="view_date")
+
 
 

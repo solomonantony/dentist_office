@@ -2,9 +2,9 @@ import streamlit as st
 import pandas as pd
 from datetime import date
 from database import get_all_patients, get_appointments_for_patient, cancel_appointment_by_id
+patients_dataframe = get_all_patients()
 
 st.subheader("Cancel Appointment")
-patients_dataframe = get_all_patients()
 selected_patient_name=st.selectbox("Patient", patients_dataframe["fullName"])
 patient_appointments= get_appointments_for_patient(selected_patient_name)
 selected = st.dataframe(patient_appointments, on_select = "rerun", selection_mode="single-row")
