@@ -64,14 +64,9 @@ def get_appointment_for_date(appointment_date):
     connection = get_connection()
     appointments_dataframe = pd.read_sql_query(
         """
-        Select Appointment.appointmentID, Patient.fullName as patientName,
-        Provider.name as providerName, Room.roomType,
-        Appointment.apptTime, Appointment.duration, Appointment.visitReason
-        from Appointment, Patient, Room, Provider 
-        where  appointment.patientID=Patient.patientID and
-        Appointment.providerID = Provider.providerID and
-        Appointment.roomID = Room.roomID and 
-        Appointment.apptDate = ?
+        Select * 
+        from Appointment 
+        where  Appointment.apptDate = ?
         order by Appointment.apptTime
         """,
         connection,
@@ -79,6 +74,27 @@ def get_appointment_for_date(appointment_date):
     )
     connection.close()
     return appointments_dataframe
+
+def get_appointments_for_patient(patient_name):
+    connection = get_connection()
+    appointments_dataframe = pd.read_sql_query(
+        """
+        Select Appointment.* 
+        from Appointment join Patient on Patient.patientID = Appointment.patientID 
+        where  Patient.fullName = ?
+        order by Appointment.apptTime
+        """,
+        connection,
+        params=(patient_name,)
+    )
+    connection.close()
+    return appointments_dataframe
+
+def cancel_appointment_by_id(appointment_id):
+    connection = get_connection()
+    connection.execute("Delete from Appointment where appointmentID=?", (appointment_id,))
+    connection.commit()
+    connection.close()
 
 if __name__ == "__main__":
     initialize_database()
